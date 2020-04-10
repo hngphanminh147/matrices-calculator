@@ -5,8 +5,9 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Solver {
-	List<Matrix> matrices = new ArrayList<>();
-	
+	private List<Matrix> matrices = new ArrayList<>();
+	private int size;
+
 	public Solver() {
 		FileReader file;
 		BufferedReader br;
@@ -37,9 +38,18 @@ public class Solver {
 				Matrix m = new Matrix(matrix);
 				this.matrices.add(m);
 			}
+			this.size = this.matrices.size();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public List<Matrix> getMatrices() {
+		return matrices;
+	}
+
+	public int getSize() {
+		return size;
 	}
 	
 	public void showAll() {

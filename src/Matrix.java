@@ -1,9 +1,6 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Matrix {
@@ -13,29 +10,11 @@ public class Matrix {
 	private int columns;
 	private int rows;
 
-	// Read from file
+	// Default cons
 	public Matrix() {
-		FileReader file;
-		BufferedReader br;
-		List<String> line;
-		try {
-			file = new FileReader("src/matrix.txt");
-			br = new BufferedReader(file);
-			line = Arrays.asList(br.readLine().split(" "));
-
-			this.rows = Integer.parseInt(line.get(0));
-			this.columns = Integer.parseInt(line.get(1));
-			this.matrix = new Double[this.rows][this.columns];
-
-			for (int i = 0; i < this.rows; i++) {
-				line = Arrays.asList(br.readLine().split(" "));
-				for (int j = 0; j < line.size(); j++) {
-					this.matrix[i][j] = Double.parseDouble(line.get(j));
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		this.matrix = null;
+		this.columns = 0;
+		this.rows = 0;
 	}
 
 	// Copy cons
@@ -44,15 +23,16 @@ public class Matrix {
 		this.columns = matrix[0].length;
 		this.matrix = matrix;
 	}
-
-	public Double[][] getMatrix() {
-		return matrix;
-	}
-
+	// Setter
 	public void setMatrix(Double[][] matrix) {
 		this.matrix = matrix;
 		this.rows = matrix.length;
 		this.columns = matrix[0].length;
+	}
+
+	// Getter
+	public Double[][] getMatrix() {
+		return matrix;
 	}
 
 	public int getColumns() {
@@ -99,7 +79,6 @@ public class Matrix {
 				// swap rows
 				if (pos > matrix.getPivot(j) && matrix.getPivot(j) != -1) {
 					matrix.setMatrix(matrix.swapRow(i, j));
-//					matrix.show();
 					break;
 				}
 			}
@@ -136,6 +115,7 @@ public class Matrix {
 		return rank;
 	}
 
+	// Operation
 	public Double[][] swapRow(int row1, int row2) {
 		Double[][] matrix = this.getMatrix().clone();
 		for (int i = 0; i < this.getColumns(); i++) {
@@ -170,13 +150,13 @@ public class Matrix {
 		return matrix;
 	}
 
+	//Solve
 	public List<String> solve() {
-//		List<Double> result = new ArrayList<Double>();
 		List<String> result = new ArrayList<String>();
 		Matrix matrix = new Matrix(this.getReducedRowEchelonForm());
 
 		// argue;
-		// flag check if every cell equal to zero
+		// flag check if every coefficient matrixs cell except the last one equal to zero
 		boolean isEqualZero = true;
 		int rank = 0;
 		for (int i = 0; i < matrix.getRows(); i++) {
@@ -190,6 +170,7 @@ public class Matrix {
 			}
 			if (isEqualZero && (matrix.getMatrix()[i][matrix.getColumns() - 1]) != 0) {
 				// no solution
+				// return empty result
 				return result;
 			}
 		}
@@ -204,9 +185,10 @@ public class Matrix {
 		} else {
 			// infinitely many solutions
 			for (int i = 0; i < matrix.getColumns() - 1; i++) {
-				result.add("-");
+				result.add("");
 			}
 
+			// mark parameter
 			for (int i = 0; i < matrix.getRows(); i++) {
 				for (int j = matrix.getPivot(i) + 1; j < matrix.getColumns() - 1; j++) {
 //					result.set(j, (matrix.getMatrix()[i][j] != 0) ? String.valueOf((char) (matrix.parameter + i)): result.get(j));
@@ -217,6 +199,7 @@ public class Matrix {
 			}
 
 			for (int i = 0; i < matrix.getRows(); i++) {
+				// ignore empty row
 				if (matrix.getPivot(i) == -1) {
 					continue;
 				}
